@@ -22,9 +22,12 @@ public class Group extends BaseModel {
     @Column(length = 256)
     private String description;
 
+    @Transient
+    private String ruleName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Rule rule;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rule", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.REMOVE)
     private Collection<APInfo> apinfos = new ArrayList<>();
 }

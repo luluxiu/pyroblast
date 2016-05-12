@@ -4,14 +4,15 @@ import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * Created by freedom on 2016/3/31.
  */
 @Data
-public class GroupBean {
+public class GroupBean implements Serializable {
 
-    private Long id;
+    private Long id = new Long(0);
 
     @NotNull
     @Length(min = 1, max = 32)
@@ -20,6 +21,6 @@ public class GroupBean {
     @Length(min = 1, max = 256)
     private String description;
 
-    private Long ruleId = new Long(0);
+    private String ruleName;
 
 }

@@ -1,23 +1,142 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+  <title>Login</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="cache-control" content="no-cache">
+  <link rel="stylesheet" href="${viewHelper.getPath()}/pyro/css/bootstrap.min.css">
+  <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+  <script src="${viewHelper.getPath()}/pyro/js/jquery.min.js"></script>
+  <script src="${viewHelper.getPath()}/pyro/js/bootstrap.min.js"></script>
 </head>
 <body>
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4 col-xs-12 col-sm-12">
+      <h1>登录</h1> <hr>
+      <div class="alert alert-danger" id="msg" style="display:none;">
 
-<form name="login" method="post" action="login">
-    <input type="hidden" name="${pyroblast.gw_id}" value="${pyroblast.gw_id}" />
-    <input type="hidden" name="${pyroblast.gw_address}" value="${pyroblast.gw_address}" />
-    <input type="hidden" name="${pyroblast.gw_port}" value="${pyroblast.gw_port}" />
-    <input type="hidden" name="${pyroblast.mac}" value="${pyroblast.mac}" />
-    <input type="hidden" name="${pyroblast.url}" value="${pyroblast.url}" />
-    <input type="text" name="username" value="" />
-    <br/>
-    <input type="password" name="password" value="" />
-    <br/>
-    <input type="submit" name="submit" value="submit" />
-</form>
+      </div>
+    </div>
+    <div class="col-md-4 col-md-offset-4 col-xs-12 col-sm-12">
+      <form class="form">
+        <input type="hidden" name="gw_id" value="${pyroblast.gw_id ?if_exists}" />
+        <input type="hidden" name="gw_address" value="${pyroblast.gw_address ?if_exists}" />
+        <input type="hidden" name="gw_port" value="${pyroblast.gw_port ?if_exists ?c}" />
+        <input type="hidden" name="mac" value="${pyroblast.mac ?if_exists}" />
+        <input type="hidden" name="url" value="${pyroblast.url ?if_exists}" />
+        <div class="form-group">
+          <label for="username">用户名</label>
+          <input placeholder="用户名" id="username" name="username" class="form-control" tabindex="0">
+        </div>
+        <div class="form-group">
+          <label for="password">密码</label>
+          <input type="password" placeholder="密码" id="password" name="password" class="form-control" tabindex="0">
+        </div>
+        <div class="form-group">
+          <input class="btn btn-primary" style="width:100%" type="submit" value="登录" />
+        </div>
+      </form>
+      <div class="form-group" style="display:none" id="oneshot">
+        <button class="btn btn-primary" style="width:100%" type="button" id="oneclick">一键上网</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  <#if code??>
+    var code = ${code};
+  <#else>
+    var code = 0;
+  </#if>
 
+  var msg = "${msg ?if_exists}";
+
+  $("#oneclick").click(function(){
+    top.location.href = "http://${pyroblast.gw_address ?if_exists}:${pyroblast.gw_port ?if_exists ?c}" +
+                        "/wifidog/auth?client=browser&token=" + msg;
+  })
+
+  $('form').submit(function(e){
+    //e.preventDefault();
+    if($("input[name='username']").val().length == 0 ||
+      $("input[name='password']").val().length == 0) {
+
+      return false;
+    }
+
+    $.ajax({
+      url: "${viewHelper.getPath()}/pyroblast/login",
+      type: 'post',
+      data: $('form').serialize(),
+      success: function(result) {
+        //var json = $.parseJSON(result);
+        var json = result;
+        /*
+        {
+          "pyroblastLogin" : {
+            "gw_id" : "00:0c:43:76:20:77",
+            "gw_address" : "192.168.1.1",
+            "gw_port" : 2060,
+            "mac" : "20:a2:e4:8a:ea:52"
+          },
+          "msg" : "00:0c:43:76:20:77",
+          "code" : "1"
+        }
+        */
+
+        code = parseInt(json.code);
+        msg = json.msg;
+        handler();
+      },
+      error: function () {
+        $("#msg").html("无法登录");
+        $("#msg").show();
+      }
+    });
+
+    return false;
+  })
+
+  function handler() {
+    switch(code) {
+      case 1:
+        $("#msg").html("AP - " + msg + " 未注册");
+        $("#msg").show();
+        $("input").prop("disabled", true);
+        break;
+
+      case 2:
+        $("input").prop("disabled", true);
+        $('form').hide();
+        $('#oneshot').show();
+        break;
+
+      case 3:
+        $("input").prop("disabled", true);
+        $('form').hide();
+        $('#oneshot').show();
+        break;
+
+      case 4:
+        top.location.href = "http://${pyroblast.gw_address ?if_exists}:${pyroblast.gw_port ?if_exists ?c}" +
+          "/wifidog/auth?client=browser&token=" + msg;
+        break;
+
+      case 5:
+        $("#msg").html("用户名或密码错误");
+        $("#msg").show();
+        setTimeout('$("#msg").hide(500)' , 3000);
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  handler();
+
+</script>
 </body>
 </html>

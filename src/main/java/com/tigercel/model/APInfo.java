@@ -26,6 +26,12 @@ public class APInfo extends BaseModel {
     @Column(nullable = false, unique=true, length=18)
     private String mac;
 
+    @Transient
+    private String ruleName;
+
+    @Transient
+    private String groupName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Rule rule;
 
@@ -34,10 +40,6 @@ public class APInfo extends BaseModel {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "ap", cascade = CascadeType.REMOVE)
     private Collection<Connection> connection = new ArrayList<>();
-
-    @Column(nullable = false)
-    private Date updatedAt;
-
 
     private Date lastHeartbeatAt;
 
@@ -51,10 +53,5 @@ public class APInfo extends BaseModel {
     private Float lastHeartbeatSysLoad;
 
     private Long lastHeartbeatWifidogUptime;
-
-
-    public void setUpdatedAt() {
-        updatedAt = new Date();
-    }
 
 }

@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by freedom on 2016/3/30.
  */
@@ -33,6 +35,17 @@ public class RuleService {
         );
     }
 
+    @Cacheable(value = CACHE_NAME)
+    public Page<Rule> findAllByName(PageBean pb, String name) {
+        return ruleRepository.findAllByName(name,
+                new PageRequest(pb.getPage() - 1,
+                        pb.getSize(),
+                        Sort.Direction.valueOf(pb.getSortOrder().toUpperCase()),
+                        pb.getSortName()
+                )
+        );
+    }
+
     @Cacheable(value = CACHE_NAME, key = "#name")
     public Rule findByName(String name) {
         return ruleRepository.findByName(name);
@@ -51,5 +64,11 @@ public class RuleService {
     @CacheEvict(value = CACHE_NAME, allEntries = true)
     public void delete(Long id) {
         ruleRepository.delete(id);
+    }
+
+    @Cacheable(value = CACHE_NAME)
+    public List<Rule> findAll() {
+
+        return ruleRepository.findAll();
     }
 }

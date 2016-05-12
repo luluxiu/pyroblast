@@ -1,0 +1,94 @@
+<#include "../layout/header.html" >
+
+  <p class="toolbar">
+    <span class="alert"></span>
+  </p>
+
+  <table id="table" class="table table-no-bordered" data-show-refresh="true"
+         data-show-columns="true" data-striped="true" data-show-toggle="true"
+         data-query-params-type="" data-query-params="queryParams" data-toolbar=".toolbar"
+         data-page-list="[10, 20, 50]" data-pagination="true" data-side-pagination="server"
+         data-search='true' data-search-time-out='3000' data-trim-on-search='true'
+         data-search-on-enter-key='true'>
+    <thead>
+      <th data-formatter="runningFormatter" data-visible="false">No.</th>
+      <th data-field="id" data-align="center" data-visible="false">ID</th>
+      <th data-field="mac" data-align="center" data-sortable="true">MAC</th>
+      <th data-field="ip" data-align="center" data-sortable="true" data-visible="false">IP</th>
+      <th data-field="status" data-align="center" data-sortable="true">认证状态</th>
+      <th data-field="client" data-align="center" data-visible="true">客户端类型</th>
+      <th data-field="loginTime" data-align="center" data-visible="true" >登录时间</th>
+      <th data-field="outgoing" data-align="center" data-visible="true" data-formatter="memFormatter">上传</th>
+      <th data-field="incoming" data-align="center" data-visible="true" data-formatter="memFormatter">下载</th>
+      <th data-field="loginCount" data-align="center" data-visible="false">登录次数</th>
+    </thead>
+  </table>
+
+
+  <script type='text/javascript'>
+
+    var CONN_SHOW = "${viewHelper.getPath()}/conn/show";
+    var apname = '${apname ?if_exists}'
+
+    var $table = $('#table').bootstrapTable({
+      sortOrder: "desc",
+      url: CONN_SHOW,
+      formatShowingRows : formatShowingRows,
+      formatRecordsPerPage : formatRecordsPerPage
+    })
+
+    $(function () {
+      $table.on('post-body.bs.table', function () {
+        var $search = $table.data('bootstrap.table')
+          .$toolbar.find('.search input');
+        $search.attr('placeholder', '根据MAC搜索 ...');
+      });
+    })
+
+    function queryParams(params) {
+      return {
+        page: params.pageNumber,
+        size: params.pageSize,
+        sortName: params.sortName || "updatedAt",
+        sortOrder: params.sortOrder || "desc",
+        search: params.searchText,
+        apName: apname,
+        _r: Math.floor(Math.random()*10000)
+      };
+    }
+
+    function formatRecordsPerPage(pageNumber) {
+      return '&nbsp;' + pageNumber + ' 每页';
+    };
+
+    function formatShowingRows(pageFrom, pageTo, totalRows) {
+      return '共 ' + totalRows + ' 项记录';
+    };
+
+    function runningFormatter(value, row, index) {
+      return index + 1;
+    }
+
+    function memFormatter(value, row, index) {
+      var mem;
+
+      if(value == null) {
+        mem = "-";
+      }
+      else if(value < 1024) {
+        mem = "< 1 KB";
+      }
+      else if(value < 1024 * 1024) {
+        mem = (value/1024).toFixed(2) + " KB";
+      }
+      else {
+        mem = (value/(1024*1024)).toFixed(2) + " MB"
+      }
+
+      return mem;
+    }
+
+  </script>
+
+
+  <#include "../layout/footer.html" >

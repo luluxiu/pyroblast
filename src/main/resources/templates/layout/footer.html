@@ -1,0 +1,50 @@
+          </div>
+        </div>
+      </div>
+      <!-- PAGE CONTENT WRAPPER -->
+    </div>
+  <!-- END PAGE CONTENT -->
+  </div>
+  <!-- END PAGE CONTAINER -->
+
+  <!-- MESSAGE BOX-->
+  <div class="message-box animated fadeIn" data-sound="alert" id="mb-signout">
+    <div class="mb-container">
+      <div class="mb-middle">
+        <div class="mb-title"><span class="fa fa-sign-out"></span><strong>退出登录</strong> ?</div>
+        <div class="mb-content">
+        </div>
+        <div class="mb-footer">
+          <div class="pull-right">
+            <form name="logout" action="logout" method="post" >
+              <input type="hidden" name="_csrf" value="${_csrf.token ?if_exists}" />
+              <button type="submit" class="btn btn-success btn-lg">确定</button>
+              <button class="btn btn-default btn-lg mb-control-close">取消</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END MESSAGE BOX-->
+
+  <!-- START PRELOADS -->
+  <audio id="audio-alert" src="${viewHelper.getPath()}/audio/alert.mp3" preload="auto"></audio>
+  <audio id="audio-fail" src="${viewHelper.getPath()}/audio/fail.mp3" preload="auto"></audio>
+  <!-- END PRELOADS -->
+
+  <!-- START TEMPLATE -->
+  <script type="text/javascript" src="${viewHelper.getPath()}/js/settings.js"></script>
+
+  <script type="text/javascript" src="${viewHelper.getPath()}/js/plugins.js"></script>
+  <script type="text/javascript" src="${viewHelper.getPath()}/js/actions.js"></script>
+
+   <script>
+     <#if menu ??>
+       $("#" + "${menu}").addClass("active");
+     <#else>
+       $("#rules").addClass("active");
+     </#if>
+   </script>
+</body>
+</html>

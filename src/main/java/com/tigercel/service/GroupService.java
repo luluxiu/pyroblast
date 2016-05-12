@@ -33,6 +33,7 @@ public class GroupService {
     @CacheEvict(value = CACHE_NAME, allEntries = true)
     public void save(Group group, Rule rule) {
 
+        group.setRuleName(rule.getName());
         group.setRule(rule);
         groupRepository.save(group);
     }
@@ -58,6 +59,17 @@ public class GroupService {
     @Cacheable(value = CACHE_NAME)
     public Page<Group> findAll(PageBean pb) {
         return groupRepository.findAll(
+                new PageRequest(pb.getPage() - 1,
+                        pb.getSize(),
+                        Sort.Direction.valueOf(pb.getSortOrder().toUpperCase()),
+                        pb.getSortName()
+                )
+        );
+    }
+
+    @Cacheable(value = CACHE_NAME)
+    public Page<Group> findAllByName(PageBean pb, String name) {
+        return groupRepository.findAllByName(name,
                 new PageRequest(pb.getPage() - 1,
                         pb.getSize(),
                         Sort.Direction.valueOf(pb.getSortOrder().toUpperCase()),

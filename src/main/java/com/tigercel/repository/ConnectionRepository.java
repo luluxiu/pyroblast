@@ -23,4 +23,7 @@ public interface ConnectionRepository extends JpaRepository<Connection, Long> {
     Page<Connection> findAllByMacAndStatus(String mac, AuthStatus status, Pageable pageRequest);
 
     Connection findOneByMacAndAp(String mac, APInfo ap);
+
+    //Connection findOneByToken(String token);
+    Connection findOneByMacAndApAndToken(String mac, APInfo ap, String token);
 }

@@ -1,7 +1,6 @@
 package com.tigercel.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.tigercel.model.support.UserType;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -14,18 +13,30 @@ import javax.persistence.*;
 @Table(name = "t_user")
 @JsonIgnoreProperties(value = {"password"})
 public class User extends BaseModel {
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_USER  = "ROLE_USER";
 
     @Column(nullable = false, unique=true, length = 32)
-    private String name;
+    private String username;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, length = 256)
     private String password;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserType type = UserType.GUEST;
+    private String role = ROLE_USER;
 
     @Column(length = 256)
     private String description;
+
+
+    public User() {
+
+    }
+
+    public User(String name, String password, String role) {
+        this.username = name;
+        this.password = password;
+        this.role = role;
+    }
 
 }

@@ -5,7 +5,7 @@ package com.tigercel.model.support;
  */
 public enum UserType {
     ADMIN("admin"),
-    GUEST("guest");
+    GUEST("user");
 
     private String type;
 

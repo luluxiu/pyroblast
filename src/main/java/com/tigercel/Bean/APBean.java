@@ -5,14 +5,15 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Pattern;
+import java.io.Serializable;
 
 /**
  * Created by freedom on 2016/3/31.
  */
 @Data
-public class APBean {
+public class APBean implements Serializable {
 
-    private Long id;
+    private Long id = new Long(0);
 
     @NotBlank
     @Length(min = 1, max = 32)
@@ -25,6 +26,8 @@ public class APBean {
     @Pattern(regexp = "^[A-Fa-f0-9]{2}(:[A-Fa-f0-9]{2}){5}$", message = "Invalid MAC Address")
     private String mac;
 
-    private Long groupId = new Long(0);
+    private String groupName;
+
+    private String ruleName;
 
 }

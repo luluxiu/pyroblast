@@ -1,6 +1,7 @@
 package com.tigercel.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.tigercel.Constants;
 import com.tigercel.model.support.AuthStatus;
 import lombok.Data;
 
@@ -17,10 +18,10 @@ import java.util.Date;
 @JsonIgnoreProperties(value = {"ap"})
 public class Connection extends BaseModel {
 
-    @Column(nullable = false, length = 18)
+    @Column(length = 18)
     private String mac;
 
-    @Column(nullable = false, length = 16)
+    @Column(length = 16)
     private String ip;
 
     private Long outgoing;
@@ -30,9 +31,9 @@ public class Connection extends BaseModel {
     private Date loginTime;
 
     @Min(value = 0)
-    private Integer loginCount;
+    private Integer loginCount = 0;
 
-    @Column(length = 64)
+    @Column(nullable = false, length = 64)
     private String token;
 
     @Column(nullable = false)
@@ -43,4 +44,6 @@ public class Connection extends BaseModel {
     private APInfo ap;
 
     private Date expiredAt;
+
+    private String client = Constants.CONNECTION_CLIENT_BROWSER;
 }
