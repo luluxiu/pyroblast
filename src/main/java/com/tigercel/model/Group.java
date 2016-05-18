@@ -13,7 +13,7 @@ import java.util.Collection;
 @Entity
 @Data
 @Table(name = "t_group")
-@JsonIgnoreProperties(value = {"rule"})
+@JsonIgnoreProperties(value = {"rule", "apinfos"})
 public class Group extends BaseModel {
 
     @Column(nullable = false, unique=true, length = 32)
